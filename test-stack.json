@@ -1,1 +1,12 @@
-{"Resources":{"testbucketE6E05ABE":{"Type":"AWS::S3::Bucket","Properties":{"BucketName":"test-bucket"},"UpdateReplacePolicy":"Retain","DeletionPolicy":"Retain"}}}
+{
+  "Resources" : {
+    "testbucketE6E05ABE" : {
+      "Type" : "AWS::S3::Bucket",
+      "Properties" : {
+        "BucketName" : "test-bucket"
+      },
+      "UpdateReplacePolicy" : "Retain",
+      "DeletionPolicy" : "Retain"
+    }
+  }
+}
