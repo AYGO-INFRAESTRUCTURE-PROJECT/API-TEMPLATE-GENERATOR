@@ -1,4 +1,4 @@
-package com.example.menu.security;
+package co.com.escuelaing.security;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+//@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${auth0.audience}")
@@ -30,13 +30,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .mvcMatchers(HttpMethod.GET, "/api/menu/items/**").permitAll() // GET requests don't need auth
+                .mvcMatchers(HttpMethod.POST, "/v1/**").permitAll() // GET requests don't need auth
                 .anyRequest()
                 .authenticated()
                 .and()
                 .cors()
                 .configurationSource(corsConfigurationSource())
                 .and()
+                .csrf().disable()
                 .oauth2ResourceServer()
                 .jwt()
                 .decoder(jwtDecoder())

@@ -1,4 +1,4 @@
-package com.example.menu.security;
+package co.com.escuelaing.security;
 
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
