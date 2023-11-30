@@ -18,7 +18,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @EnableWebSecurity
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
+// @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${auth0.audience}")
@@ -60,8 +60,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 HttpMethod.GET.name(),
                 HttpMethod.PUT.name(),
                 HttpMethod.POST.name(),
-                HttpMethod.DELETE.name()
-        ));
+                HttpMethod.DELETE.name()));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration.applyPermitDefaultValues());

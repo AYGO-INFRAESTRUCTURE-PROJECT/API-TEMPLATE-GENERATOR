@@ -7,21 +7,15 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import co.com.escuelaing.model.WebStack;
 import co.com.escuelaing.services.TemplateService;
+import co.com.escuelaing.services.exceptions.TemplateException;
 
-import javax.validation.Valid;
 
-import java.io.BufferedReader;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 @RestController
 @RequestMapping(value = "v1")
 public class AWSStackController {
@@ -33,12 +27,36 @@ public class AWSStackController {
 
     @PostMapping("/synth")
     @PreAuthorize("hasAuthority('create:template')")
-    public ResponseEntity<String> synthTemplate(@RequestBody WebStack stack) throws Exception {
-        String template = service.synthStack(stack);
+    public ResponseEntity<String> synthTemplate(@RequestBody WebStack stack) {
+        String template;
+        try {
+            template = service.synthStack(stack);
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(template);
+        } catch (TemplateException e) {
+            e.printStackTrace();
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
+        }
+    }
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(template);
+    @PostMapping("/synth/deployments")
+    @PreAuthorize("hasAuthority('create:template') && hasAuthority('create:deployment')")
+    public ResponseEntity<String> synthAndDeployTemplate(@RequestBody WebStack stack) {
+        String template;
+        try {
+            template = service.synthAndDeploy(stack);
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(template);
+        } catch (TemplateException e) {
+            e.printStackTrace();
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
+        }
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
