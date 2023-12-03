@@ -56,6 +56,7 @@ public class InfraStack extends Stack {
                 "git clone https://github.com/AYGO-INFRAESTRUCTURE-PROJECT/API-TEMPLATE-GENERATOR.git --branch main",
                 "sudo amazon-linux-extras install java-openjdk11 -y",
                 "cd 'API-TEMPLATE-GENERATOR'",
+                "sudo chmod +x gradlew",
                 "./gradlew bootRun"
                 );
 
