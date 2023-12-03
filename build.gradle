@@ -24,6 +24,9 @@ dependencies {
 	implementation "software.amazon.awscdk:core:${CDK_VERSION}"
 	implementation "software.amazon.awscdk:s3:${CDK_VERSION}"
 	implementation "software.amazon.awscdk:ec2:${CDK_VERSION}"
+	implementation "software.amazon.awscdk:apigateway:${CDK_VERSION}"
+	implementation "software.amazon.awscdk:dynamodb:${CDK_VERSION}"
+	implementation "software.amazon.awscdk:lambda:${CDK_VERSION}"
 	implementation group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '6.7.0.202309050840-r'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

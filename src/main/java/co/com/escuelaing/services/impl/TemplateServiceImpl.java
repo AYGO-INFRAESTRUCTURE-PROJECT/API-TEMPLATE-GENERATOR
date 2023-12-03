@@ -19,7 +19,6 @@ import software.amazon.awscdk.core.Environment;
 import software.amazon.awscdk.core.StackProps;
 import software.amazon.awscdk.cxapi.CloudAssembly;
 import software.amazon.awscdk.cxapi.CloudFormationStackArtifact;
-import software.amazon.awscdk.services.s3.Bucket;
 
 @Service
 public class TemplateServiceImpl implements TemplateService {
@@ -56,7 +55,7 @@ public class TemplateServiceImpl implements TemplateService {
                         .env(
                                 Environment.builder()
                                         .account(System.getenv("AWS_ACCOUNT"))
-                                        .region("us-east-1")
+                                        .region(stack.region)
                                         .build())
                         .build());
 

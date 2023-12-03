@@ -8,4 +8,5 @@ public enum ResourceType {
     LAMBDA,
     API_GATEWAY,
     EC2,
+    DYNAMO_DB,
 }

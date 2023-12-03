@@ -12,4 +12,6 @@ public class WebStack {
 
     @JsonProperty(value = "resources")
     public List<Resource> resources;
+
+    public String region = "us-east-1";
 }
