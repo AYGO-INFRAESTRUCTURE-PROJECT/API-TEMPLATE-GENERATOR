@@ -12,7 +12,8 @@
 			"installGradle": "true"
 		},
 		"ghcr.io/devcontainers/features/node": "",
-		"ghcr.io/devcontainers/features/aws-cli": ""
+		"ghcr.io/devcontainers/features/aws-cli": "",
+		"ghcr.io/devcontainers-contrib/features/aws-cdk:2": {}
 	}
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
