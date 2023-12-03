@@ -13,6 +13,7 @@ import software.amazon.awscdk.services.ec2.InstanceClass;
 import software.amazon.awscdk.services.ec2.InstanceSize;
 import software.amazon.awscdk.services.ec2.InstanceType;
 import software.amazon.awscdk.services.ec2.MachineImage;
+import software.amazon.awscdk.services.ec2.MultipartBody;
 import software.amazon.awscdk.services.ec2.Peer;
 import software.amazon.awscdk.services.ec2.Port;
 import software.amazon.awscdk.services.ec2.SecurityGroup;
@@ -47,6 +48,17 @@ public class InfraStack extends Stack {
         group.addIngressRule(Peer.anyIpv4(), Port.tcp(7000));
         group.addIngressRule(Peer.anyIpv4(), Port.tcp(22));
 
+        UserData commandsUserData = UserData.forLinux();
+        commandsUserData.addCommands(
+                "sudo yum update -y",
+                "sudo yum install -y git",
+                "cd ~",
+                "git clone https://github.com/AYGO-INFRAESTRUCTURE-PROJECT/API-TEMPLATE-GENERATOR.git --branch main",
+                "sudo amazon-linux-extras install java-openjdk11 -y",
+                "cd 'API-TEMPLATE-GENERATOR",
+                "./gradlew bootRun"
+                );
+
         Instance instance = Instance.Builder.create(this, "my-ec2")
                 .instanceType(InstanceType.of(InstanceClass.BURSTABLE3, InstanceSize.MICRO))
                 .machineImage(MachineImage.latestAmazonLinux2())
@@ -54,15 +66,7 @@ public class InfraStack extends Stack {
                 .securityGroup(group)
                 .role(Role.fromRoleArn(this, "existing-role", "arn:aws:iam::866956573632:role/LabRole"))
                 .keyName("project-aygo")
-                .userData(UserData.custom(
-                        "sudo yum update -y\n" +
-                                "sudo yum install -y git\n" +
-                                "cd ~\n" +
-                                "git clone https://github.com/AYGO-INFRAESTRUCTURE-PROJECT/API-TEMPLATE-GENERATOR.git --branch main\n"
-                                +
-                                "sudo amazon-linux-extras install java-openjdk11 -y\n" +
-                                "cd 'API-TEMPLATE-GENERATOR'\n" +
-                                "./gradlew bootRun"))
+                .userData(commandsUserData)
                 .build();
     }
 }
