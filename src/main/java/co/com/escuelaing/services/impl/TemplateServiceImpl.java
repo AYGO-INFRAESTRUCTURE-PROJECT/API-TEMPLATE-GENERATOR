@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 import co.com.escuelaing.cloud.AWSApp;
 import co.com.escuelaing.cloud.AWSStack;
+import co.com.escuelaing.model.Resource;
 import co.com.escuelaing.model.WebStack;
 import co.com.escuelaing.persistence.GitException;
 import co.com.escuelaing.persistence.TemplateRepository;
@@ -59,9 +60,9 @@ public class TemplateServiceImpl implements TemplateService {
                                         .build())
                         .build());
 
-        Bucket bucket = Bucket.Builder.create(newStack.stack, "test-bucket")
-                .bucketName("test-bucket")
-                .build();
+        for(Resource r: stack.resources) {
+            ResourceFactory.CreateResource(newStack.stack, r);
+        }
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
