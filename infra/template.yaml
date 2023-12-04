@@ -189,9 +189,16 @@ Resources:
           sudo yum update -y
           sudo yum install -y git
           cd ~
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+          source /.nvm/nvm.sh
+          nvm install 16
+          node -v
+          npm -v
+          npm install -g aws-cdk
           git clone https://github.com/AYGO-INFRAESTRUCTURE-PROJECT/API-TEMPLATE-GENERATOR.git --branch main
           sudo amazon-linux-extras install java-openjdk11 -y
-          cd 'API-TEMPLATE-GENERATOR
+          cd 'API-TEMPLATE-GENERATOR'
+          sudo chmod +x gradlew
           ./gradlew bootRun
     Metadata:
       aws:cdk:path: InfraStack/my-ec2/Resource
