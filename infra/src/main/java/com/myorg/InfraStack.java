@@ -48,8 +48,28 @@ public class InfraStack extends Stack {
         group.addIngressRule(Peer.anyIpv4(), Port.tcp(7000));
         group.addIngressRule(Peer.anyIpv4(), Port.tcp(22));
 
-        UserData commandsUserData = UserData.forLinux();
+        UserData commandsUserData = UserData.custom();
         commandsUserData.addCommands(
+                "Content-Type: multipart/mixed; boundary=\"//\"\n" +
+                "MIME-Version: 1.0\n" +
+                "\n" +
+                "--//\n" +
+                "Content-Type: text/cloud-config; charset=\"us-ascii\"\n" +
+                "MIME-Version: 1.0\n" +
+                "Content-Transfer-Encoding: 7bit\n" +
+                "Content-Disposition: attachment; filename=\"cloud-config.txt\"\n" +
+                "\n" +
+                "#cloud-config\n" +
+                "cloud_final_modules:\n" +
+                "- [scripts-user, always]\n" +
+                "\n" +
+                "--//\n" +
+                "Content-Type: text/x-shellscript; charset=\"us-ascii\"\n" +
+                "MIME-Version: 1.0\n" +
+                "Content-Transfer-Encoding: 7bit\n" +
+                "Content-Disposition: attachment; filename=\"userdata.txt\"\n" +
+                "\n" +
+                "#!/bin/bash\n" +
                 "sudo yum update -y",
                 "sudo yum install -y git",
                 "cd ~",
@@ -63,7 +83,8 @@ public class InfraStack extends Stack {
                 "sudo amazon-linux-extras install java-openjdk11 -y",
                 "cd 'API-TEMPLATE-GENERATOR'",
                 "sudo chmod +x gradlew",
-                "./gradlew bootRun"
+                "./gradlew bootRun",
+                "--//--"
                 );
 
         Instance instance = Instance.Builder.create(this, "my-ec2")
