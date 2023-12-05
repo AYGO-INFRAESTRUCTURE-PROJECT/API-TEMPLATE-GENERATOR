@@ -24,77 +24,75 @@ import software.amazon.awscdk.services.ec2.Vpc;
 import software.amazon.awscdk.services.iam.Role;
 
 public class InfraStack extends Stack {
-    public InfraStack(final Construct scope, final String id) {
-        this(scope, id, null);
-    }
+        public InfraStack(final Construct scope, final String id) {
+                this(scope, id, null);
+        }
 
-    public InfraStack(final Construct scope, final String id, final StackProps props) {
-        super(scope, id, props);
+        public InfraStack(final Construct scope, final String id, final StackProps props) {
+                super(scope, id, props);
 
-        Vpc vpc = Vpc.Builder.create(this, "my-vpc")
-                .subnetConfiguration(Arrays.asList(
-                        SubnetConfiguration.builder()
-                                .subnetType(SubnetType.PUBLIC)
-                                .name("public")
-                                .build()))
-                .restrictDefaultSecurityGroup(false)
-                .build();
+                Vpc vpc = Vpc.Builder.create(this, "my-vpc")
+                                .subnetConfiguration(Arrays.asList(
+                                                SubnetConfiguration.builder()
+                                                                .subnetType(SubnetType.PUBLIC)
+                                                                .name("public")
+                                                                .build()))
+                                .restrictDefaultSecurityGroup(false)
+                                .build();
 
-        SecurityGroup group = SecurityGroup.Builder.create(this, id)
-                .securityGroupName("test-security-group-name")
-                .vpc(vpc)
-                .build();
+                SecurityGroup group = SecurityGroup.Builder.create(this, id)
+                                .securityGroupName("test-security-group-name")
+                                .vpc(vpc)
+                                .build();
 
-        group.addIngressRule(Peer.anyIpv4(), Port.tcp(7000));
-        group.addIngressRule(Peer.anyIpv4(), Port.tcp(22));
+                group.addIngressRule(Peer.anyIpv4(), Port.tcp(7000));
+                group.addIngressRule(Peer.anyIpv4(), Port.tcp(22));
 
-        UserData commandsUserData = UserData.custom();
-        commandsUserData.addCommands(
-                "Content-Type: multipart/mixed; boundary=\"//\"\n" +
-                "MIME-Version: 1.0\n" +
-                "\n" +
-                "--//\n" +
-                "Content-Type: text/cloud-config; charset=\"us-ascii\"\n" +
-                "MIME-Version: 1.0\n" +
-                "Content-Transfer-Encoding: 7bit\n" +
-                "Content-Disposition: attachment; filename=\"cloud-config.txt\"\n" +
-                "\n" +
-                "#cloud-config\n" +
-                "cloud_final_modules:\n" +
-                "- [scripts-user, always]\n" +
-                "\n" +
-                "--//\n" +
-                "Content-Type: text/x-shellscript; charset=\"us-ascii\"\n" +
-                "MIME-Version: 1.0\n" +
-                "Content-Transfer-Encoding: 7bit\n" +
-                "Content-Disposition: attachment; filename=\"userdata.txt\"\n" +
-                "\n" +
-                "#!/bin/bash\n" +
-                "sudo yum update -y",
-                "sudo yum install -y git",
-                "cd ~",
-                "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash",
-                "source /.nvm/nvm.sh",
-                "nvm install 16",
-                "node -v",
-                "npm -v",
-                "npm install -g aws-cdk",
-                "git clone https://github.com/AYGO-INFRAESTRUCTURE-PROJECT/API-TEMPLATE-GENERATOR.git --branch main",
-                "sudo amazon-linux-extras install java-openjdk11 -y",
-                "cd 'API-TEMPLATE-GENERATOR'",
-                "sudo chmod +x gradlew",
-                "./gradlew bootRun",
-                "--//--"
-                );
+                UserData commandsUserData = UserData.custom("Content-Type: multipart/mixed; boundary=\"//\"");
+                commandsUserData.addCommands(
+                                "MIME-Version: 1.0",
+                                "",
+                                "--//",
+                                "Content-Type: text/cloud-config; charset=\"us-ascii\"",
+                                "MIME-Version: 1.0",
+                                "Content-Transfer-Encoding: 7bit",
+                                "Content-Disposition: attachment; filename=\"cloud-config.txt\"",
+                                "",
+                                "#cloud-config",
+                                "cloud_final_modules:",
+                                "- [scripts-user, always]",
+                                "",
+                                "--//",
+                                "Content-Type: text/x-shellscript; charset=\"us-ascii\"",
+                                "MIME-Version: 1.0",
+                                "Content-Transfer-Encoding: 7bit",
+                                "Content-Disposition: attachment; filename=\"userdata.txt\"",
+                                "",
+                                "#!/bin/bash",
+                                "sudo yum update -y",
+                                "sudo yum install -y git",
+                                "cd ~",
+                                "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash",
+                                "source /.nvm/nvm.sh",
+                                "nvm install 16",
+                                "node -v",
+                                "npm -v",
+                                "npm install -g aws-cdk",
+                                "git clone https://github.com/AYGO-INFRAESTRUCTURE-PROJECT/API-TEMPLATE-GENERATOR.git --branch main",
+                                "sudo amazon-linux-extras install java-openjdk11 -y",
+                                "cd 'API-TEMPLATE-GENERATOR'",
+                                "sudo chmod +x gradlew",
+                                "./gradlew bootRun",
+                                "--//--");
 
-        Instance instance = Instance.Builder.create(this, "my-ec2")
-                .instanceType(InstanceType.of(InstanceClass.BURSTABLE3, InstanceSize.MICRO))
-                .machineImage(MachineImage.latestAmazonLinux2())
-                .vpc(vpc)
-                .securityGroup(group)
-                .role(Role.fromRoleArn(this, "existing-role", "arn:aws:iam::866956573632:role/LabRole"))
-                .keyName("project-aygo")
-                .userData(commandsUserData)
-                .build();
-    }
+                Instance instance = Instance.Builder.create(this, "my-ec2")
+                                .instanceType(InstanceType.of(InstanceClass.BURSTABLE3, InstanceSize.MICRO))
+                                .machineImage(MachineImage.latestAmazonLinux2())
+                                .vpc(vpc)
+                                .securityGroup(group)
+                                .role(Role.fromRoleArn(this, "existing-role", "arn:aws:iam::866956573632:role/LabRole"))
+                                .keyName("project-aygo")
+                                .userData(commandsUserData)
+                                .build();
+        }
 }
