@@ -38,7 +38,7 @@ public class GitRepository implements TemplateRepository {
     @Override
     public void saveTemplate(String template, String name) throws GitException {
         File file = new File(PATH);
-        CredentialsProvider.setDefault(new UsernamePasswordCredentialsProvider(username, password));
+        UsernamePasswordCredentialsProvider provider =  new UsernamePasswordCredentialsProvider(username, password);
 
         if (this.git == null) {
             try {
@@ -47,6 +47,7 @@ public class GitRepository implements TemplateRepository {
                     this.git = Git.cloneRepository()
                             .setURI(repositoryURL)
                             .setDirectory(file)
+                            .setCredentialsProvider(provider)
                             .call();
                 } else {
                     org.eclipse.jgit.lib.Repository repo = new RepositoryBuilder().setGitDir(new File(PATH + "/.git"))
@@ -64,17 +65,23 @@ public class GitRepository implements TemplateRepository {
 
         try {
             git.checkout().setName("main").setStartPoint("origin main").setForced(true).call();
-            git.pull();
+            git.pull().setCredentialsProvider(provider).call();
         } catch (GitAPIException e) {
             LOGGER.error(e);
             throw new GitException(e.getMessage(), e);
         }
 
-        this.writeTemplateToRepository(template, name);
+        this.writeTemplateToRepository(template, name, provider);
     }
 
-    private void writeTemplateToRepository(String content, String name) throws GitException {
-        File file = new File(this.git.getRepository().getWorkTree(), name + ".json");
+    private void writeTemplateToRepository(String content, String name, UsernamePasswordCredentialsProvider provider) throws GitException {
+        String stacksFolder = String.format("%s/stacks/%s", this.git.getRepository().getWorkTree(), name);
+        File parent = new File(stacksFolder);
+        if (!parent.exists()) {
+            parent.mkdirs();
+        }
+        File file = new File(stacksFolder, String.format("%s.json", name));
+
         try (PrintWriter writer = new PrintWriter(file)) {
             writer.write(content);
         } catch (FileNotFoundException e) {
@@ -83,7 +90,7 @@ public class GitRepository implements TemplateRepository {
         }
 
         try {
-            git.add().addFilepattern(name + ".json").call();
+            git.add().addFilepattern("stacks/").call();
         } catch (GitAPIException e) {
             this.LOGGER.error(e);
             throw new GitException(e.getMessage(), e);
@@ -91,8 +98,8 @@ public class GitRepository implements TemplateRepository {
 
         try {
             git.commit().setMessage("Added template " + name).call();
-            Iterable<PushResult> result = git.push().call();
-            System.out.println(name);
+            Iterable<PushResult> result = git.push().setCredentialsProvider(provider).call();
+            System.out.println(stacksFolder);
         } catch (GitAPIException e) {
             this.LOGGER.error(e);
             throw new GitException(e.getMessage(), e);
