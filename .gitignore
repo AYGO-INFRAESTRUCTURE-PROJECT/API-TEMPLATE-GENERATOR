@@ -27,7 +27,7 @@ bin/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
-
+infra/template.yaml
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/

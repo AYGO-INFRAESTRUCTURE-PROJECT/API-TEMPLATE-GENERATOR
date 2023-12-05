@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 import software.amazon.awscdk.Stack;
 import software.amazon.awscdk.StackProps;
+import software.amazon.awscdk.core.Fn;
 // import software.amazon.awscdk.Duration;
 // import software.amazon.awscdk.services.sqs.Queue;
 import software.amazon.awscdk.services.ec2.Instance;
@@ -80,6 +81,7 @@ public class InfraStack extends Stack {
                                 "npm install -g aws-cdk",
                                 "git clone https://github.com/AYGO-INFRAESTRUCTURE-PROJECT/API-TEMPLATE-GENERATOR.git --branch main",
                                 "sudo amazon-linux-extras install java-openjdk11 -y",
+                                "export REPOSITORY_PASSWORD=",
                                 "cd 'API-TEMPLATE-GENERATOR'",
                                 "sudo chmod +x gradlew",
                                 "./gradlew bootRun",
