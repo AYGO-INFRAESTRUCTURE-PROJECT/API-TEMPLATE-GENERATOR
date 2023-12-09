@@ -1,5 +1,6 @@
 package co.com.escuelaing.security;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .mvcMatchers(HttpMethod.POST, "/v1/**").permitAll() // GET requests don't need auth
+                .mvcMatchers(HttpMethod.OPTIONS, "/v1/**").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -57,10 +59,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedMethods(List.of(
+                HttpMethod.OPTIONS.name(),
                 HttpMethod.GET.name(),
                 HttpMethod.PUT.name(),
                 HttpMethod.POST.name(),
                 HttpMethod.DELETE.name()));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration.applyPermitDefaultValues());
