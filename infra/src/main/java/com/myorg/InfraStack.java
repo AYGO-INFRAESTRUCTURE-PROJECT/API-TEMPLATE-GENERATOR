@@ -83,6 +83,8 @@ public class InfraStack extends Stack {
                                 "sudo amazon-linux-extras install java-openjdk11 -y",
                                 "export REPOSITORY_PASSWORD=",
                                 "cd 'API-TEMPLATE-GENERATOR'",
+                                "keytool -genkeypair -alias your-alias -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore keystore.p12 -validity 3650 -storepass \"$REPOSITORY_PASSWORD\" -keypass \"$REPOSITORY_PASSWORD\" -dname \"CN=YourFirstName YourLastName, OU=YourOrganizationalUnit, O=YourOrganization, L=YourLocality, ST=YourState, C=YourCountry\"",
+                                "mv keystore.p12 src/main/resources/",
                                 "sudo chmod +x gradlew",
                                 "./gradlew bootRun",
                                 "--//--");

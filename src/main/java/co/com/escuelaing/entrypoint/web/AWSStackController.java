@@ -25,6 +25,12 @@ public class AWSStackController {
         this.service = service;
     }
 
+
+    @GetMapping("/health")
+    public ResponseEntity<?> health() {
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
     @PostMapping("/synth")
     @PreAuthorize("hasAuthority('create:template')")
     public ResponseEntity<String> synthTemplate(@RequestBody WebStack stack) {
